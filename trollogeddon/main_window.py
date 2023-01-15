@@ -16,7 +16,37 @@
 #
 # https://opensource.org/licenses/MIT
 
-.idea
-venv
-__pycache__
-*.session
+
+from PySide6.QtCore import QSize, Slot
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QMainWindow, QApplication, QPushButton
+from qasync import asyncSlot, QApplication
+
+from settings_dialog import SettingsDialog
+from telegram import create_client
+
+
+class MainWindow(QMainWindow):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+
+        self.setWindowTitle("Trollogeddon")
+        self.setFixedSize(QSize(640, 480))
+
+        connect_button = QPushButton("Connect Now", clicked=self._connect_clicked)
+        self.setCentralWidget(connect_button)
+
+        settings_action = QAction("&Settings", self, triggered=self._settings_action_triggered)
+        exit_action = QAction("E&xit", self, triggered=QApplication.instance().quit)
+
+        start_menu = self.menuBar().addMenu("&Start")
+        start_menu.addAction(settings_action)
+        start_menu.addAction(exit_action)
+
+    @Slot()
+    def _settings_action_triggered(self) -> None:
+        SettingsDialog().exec()
+
+    @asyncSlot()
+    async def _connect_clicked(self):
+        await create_client()

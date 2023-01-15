@@ -16,6 +16,12 @@
 #
 # https://opensource.org/licenses/MIT
 
-PyQt6==6.4.0
-PyQt6-Qt6==6.4.2
-PyQt6-sip==13.4.0
+pyaes==1.6.1
+pyasn1==0.4.8
+PySide6==6.4.2
+PySide6-Addons==6.4.2
+PySide6-Essentials==6.4.2
+qasync==0.23.0
+rsa==4.9
+shiboken6==6.4.2
+Telethon==1.26.1

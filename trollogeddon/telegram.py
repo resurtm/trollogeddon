@@ -16,7 +16,17 @@
 #
 # https://opensource.org/licenses/MIT
 
-.idea
-venv
-__pycache__
-*.session
+from telethon import TelegramClient
+
+from settings import AppSettings
+
+
+async def create_client() -> None:
+    print(0)
+    settings = AppSettings()
+    client = TelegramClient("sess_name_123", int(settings.api_id()), settings.api_hash())
+    print(1)
+    await client.connect()
+    print(2)
+    await client.send_code_request("+49175...")
+    print(3)
