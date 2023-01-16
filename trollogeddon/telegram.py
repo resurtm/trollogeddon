@@ -89,14 +89,12 @@ async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: 
         _LOGGER.debug("Verify OTP code, already authorized, end")
         return
 
-    kwargs = dict(phone=phone, code=otp_code, phone_code_hash=phone_hash)
     try:
         _LOGGER.debug("Verify OTP code, sign in")
-        await client.sign_in(**kwargs)
+        await client.sign_in(phone=phone, code=otp_code, phone_code_hash=phone_hash)
     except SessionPasswordNeededError:
         _LOGGER.debug("Verify OTP code, caught SessionPasswordNeededError")
-        kwargs = kwargs | dict(password="" if password is None else password)
-        await client.sign_in(**kwargs)
+        await client.sign_in(password=password)
     finally:
         await client.disconnect()
 

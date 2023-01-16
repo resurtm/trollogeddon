@@ -62,7 +62,7 @@ class SettingsDialog(QDialog):
         """Prepare application settings."""
         _LOGGER.debug("SettingsDialog, prepare settings, begin")
 
-        self.window_title = self.tr("Application Settings", "")
+        self.window_title = "Application Settings"
         self._settings = AppSettings()
 
         _LOGGER.debug("SettingsDialog, prepare settings, end")
@@ -72,9 +72,9 @@ class SettingsDialog(QDialog):
         _LOGGER.debug("SettingsDialog, create API ID controls, begin")
 
         self._api_id_input = QLineEdit()
-        self._api_id_input.text = self._settings.api_id()
-        self._api_id_label = QLabel(self.tr("App api_id:", ""))
-        self._api_id_label.set_buddy(self._api_id_input)
+        self._api_id_input.setText(self._settings.api_id())
+        self._api_id_label = QLabel("App api_id:")
+        self._api_id_label.setBuddy(self._api_id_input)
 
         _LOGGER.debug("SettingsDialog, create API ID controls, end")
 
@@ -83,9 +83,9 @@ class SettingsDialog(QDialog):
         _LOGGER.debug("SettingsDialog, create API hash controls, begin")
 
         self._api_hash_input = QLineEdit()
-        self._api_hash_input.text = self._settings.api_hash()
-        self._api_hash_label = QLabel(self.tr("App api_hash:", ""))
-        self._api_hash_label.set_buddy(self._api_hash_input)
+        self._api_hash_input.setText(self._settings.api_hash())
+        self._api_hash_label = QLabel("App api_hash:")
+        self._api_hash_label.setBuddy(self._api_hash_input)
 
         _LOGGER.debug("SettingsDialog, create API hash controls, end")
 
@@ -103,8 +103,8 @@ class SettingsDialog(QDialog):
         """Slot method which handles the application settings save button signal."""
         _LOGGER.debug("SettingsDialog, save button click, begin")
 
-        self._settings.set_api_id(self._api_id_input.text)
-        self._settings.set_api_hash(self._api_hash_input.text)
+        self._settings.set_api_id(self._api_id_input.text())
+        self._settings.set_api_hash(self._api_hash_input.text())
         self.close()
 
         _LOGGER.debug("SettingsDialog, save button click, end")
@@ -115,12 +115,12 @@ class SettingsDialog(QDialog):
 
         layout = QGridLayout(self)
 
-        layout.add_widget(self._api_id_label, 0, 0)
-        layout.add_widget(self._api_id_input, 0, 1)
+        layout.addWidget(self._api_id_label, 0, 0)
+        layout.addWidget(self._api_id_input, 0, 1)
 
-        layout.add_widget(self._api_hash_label, 1, 0)
-        layout.add_widget(self._api_hash_input, 1, 1)
+        layout.addWidget(self._api_hash_label, 1, 0)
+        layout.addWidget(self._api_hash_input, 1, 1)
 
-        layout.add_widget(self._save_button, 2, 0, 1, 2)
+        layout.addWidget(self._save_button, 2, 0, 1, 2)
 
         _LOGGER.debug("SettingsDialog, create layout, end")

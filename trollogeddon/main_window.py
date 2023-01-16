@@ -68,8 +68,8 @@ class MainWindow(QMainWindow):
     def _main_setup(self) -> None:
         """Perform the main setup of the application main window."""
         _LOGGER.debug("MainWindow, main setup, begin")
-        self.window_title = "Trollogeddon"
-        self.set_fixed_size(QSize(640, 480))
+        self.setWindowTitle("Trollogeddon")
+        self.setFixedSize(QSize(640, 480))
         _LOGGER.debug("MainWindow, main setup, end")
 
     def _create_actions(self) -> None:
@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, create actions, begin")
 
         self._settings_action = QAction("&Settings", self)
-        self._settings_action.changed.connect(self._settings_action_triggered)  # type: ignore
+        self._settings_action.triggered.connect(self._settings_action_triggered)  # type: ignore
 
         self._ensure_action = QAction("&Ensure Session", self)
         self._ensure_action.triggered.connect(self._ensure_action_triggered)  # type: ignore
@@ -91,11 +91,11 @@ class MainWindow(QMainWindow):
         """Create start menu item of the menu bar."""
         _LOGGER.debug("MainWindow, create start menu, begin")
 
-        start_menu = self.menu_bar().add_menu("&Start")
-        start_menu.add_action(self._settings_action)
-        start_menu.add_action(self._ensure_action)
-        start_menu.add_separator()
-        start_menu.add_action(self._exit_action)
+        start_menu = self.menuBar().addMenu("&Start")
+        start_menu.addAction(self._settings_action)
+        start_menu.addAction(self._ensure_action)
+        start_menu.addSeparator()
+        start_menu.addAction(self._exit_action)
 
         _LOGGER.debug("MainWindow, create start menu, end")
 
@@ -103,19 +103,19 @@ class MainWindow(QMainWindow):
         """Create main toolbar of the main window."""
         _LOGGER.debug("MainWindow, create toolbar, begin")
         toolbar = QToolBar("Main Toolbar")
-        toolbar.add_action(self._settings_action)
-        toolbar.add_action(self._ensure_action)
-        toolbar.add_separator()
-        toolbar.add_action(self._exit_action)
-        self.add_tool_bar(toolbar)
+        toolbar.addAction(self._settings_action)
+        toolbar.addAction(self._ensure_action)
+        toolbar.addSeparator()
+        toolbar.addAction(self._exit_action)
+        self.addToolBar(toolbar)
         _LOGGER.debug("MainWindow, create toolbar, end")
 
     def _create_dialogs_table(self) -> None:
         """Create the dialogs table."""
         _LOGGER.debug("MainWindow, create dialogs table, begin")
         self._dialogs_table = QTableWidget(self)
-        self._dialogs_table.column_count = 2
-        self._dialogs_table.set_horizontal_header_item(0, QTableWidgetItem("Chat Name"))
+        self._dialogs_table.setColumnCount(2)
+        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem("Chat Name"))
         _LOGGER.debug("MainWindow, create dialogs table, end")
 
     def _create_dialogs_fetch_button(self) -> None:
@@ -131,15 +131,14 @@ class MainWindow(QMainWindow):
         """Create layout of the app main window."""
         _LOGGER.debug("MainWindow, create layout, begin")
 
-        layout = QGridLayout(self)
-        layout.spacing = 10
+        layout = QGridLayout()
+        layout.setSpacing(10)
+        layout.addWidget(self._dialogs_table, 0, 0)
+        layout.addWidget(self._fetch_button, 1, 0)
 
         central_widget = QWidget(self)
-        central_widget.set_layout(layout)
-        self.set_central_widget(central_widget)
-
-        layout.add_widget(self._dialogs_table, 0, 0)
-        layout.add_widget(self._fetch_button, 1, 0)
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
 
         _LOGGER.debug("MainWindow, create layout, end")
 
@@ -169,15 +168,15 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, exit action trigger, end")
 
     @asyncSlot()
-    async def _fetch_button_clicked(self):
+    async def _fetch_button_clicked(self) -> None:
         """Async slot which handles the fetch all the dialogs button click signal."""
         _LOGGER.debug("MainWindow, fetch button click, begin")
 
         self._dialogs_table.clearContents()
         dialogs = await fetch_all_dialogs()
 
-        self._dialogs_table.set_row_count(len(dialogs))
+        self._dialogs_table.setRowCount(len(dialogs))
         for index, dialog in enumerate(dialogs):
-            self._dialogs_table.set_item(index, 0, QTableWidgetItem(dialog.name))
+            self._dialogs_table.setItem(index, 0, QTableWidgetItem(dialog.name))
 
         _LOGGER.debug("MainWindow, fetch button click, end")
