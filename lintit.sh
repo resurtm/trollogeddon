@@ -22,3 +22,4 @@ set -euxo pipefail
 
 pip install -r requirements_dev.in
 python -m mypy trollogeddon
+python -m pydocstyle trollogeddon
