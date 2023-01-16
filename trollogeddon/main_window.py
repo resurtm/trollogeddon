@@ -20,14 +20,24 @@
 
 import logging
 from typing import Final
-from qasync import asyncSlot
+
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QMainWindow, QApplication, QPushButton, QToolBar
+from PySide6.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QPushButton,
+    QToolBar,
+    QTableWidget,
+    QGridLayout,
+    QWidget,
+    QTableWidgetItem,
+)
+from qasync import asyncSlot
 
 from ensure_dialog import EnsureSessionDialog
 from settings_dialog import SettingsDialog
-from telegram import get_me
+from telegram import fetch_all_dialogs
 
 _LOGGER: Final = logging.getLogger(__name__)
 
@@ -43,11 +53,17 @@ class MainWindow(QMainWindow):
         """
         _LOGGER.debug("MainWindow, constructor, begin")
         super().__init__(parent)
+
         self._main_setup()
+
         self._create_actions()
         self._create_start_menu()
         self._create_toolbar()
-        self._create_connect_button()
+
+        self._create_dialogs_table()
+        self._create_dialogs_fetch_button()
+        self._create_layout()
+
         _LOGGER.debug("MainWindow, constructor, end")
 
     def _main_setup(self) -> None:
@@ -86,12 +102,35 @@ class MainWindow(QMainWindow):
         self.addToolBar(toolbar)
         _LOGGER.debug("MainWindow, create toolbar, end")
 
-    def _create_connect_button(self) -> None:
-        """Creates the central connect button element."""
-        _LOGGER.debug("MainWindow, create connect button, begin")
-        connect_button = QPushButton(self.tr("Connect Now"), clicked=self._connect_clicked)
-        self.setCentralWidget(connect_button)
-        _LOGGER.debug("MainWindow, create connect button, end")
+    def _create_dialogs_table(self) -> None:
+        """Creates the dialogs table."""
+        _LOGGER.debug("MainWindow, create dialogs table, begin")
+        self._dialogs_table = QTableWidget(self)
+        self._dialogs_table.setColumnCount(2)
+        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem(self.tr("Chat Name")))
+        _LOGGER.debug("MainWindow, create dialogs table, end")
+
+    def _create_dialogs_fetch_button(self) -> None:
+        """Creates the button which fetches all the dialogs."""
+        _LOGGER.debug("MainWindow, create fetch button, begin")
+        self._fetch_button = QPushButton(self.tr("Fetch All Dialogs"), clicked=self._fetch_button_clicked)
+        _LOGGER.debug("MainWindow, create fetch button, end")
+
+    def _create_layout(self) -> None:
+        """Create layout of the app main window."""
+        _LOGGER.debug("MainWindow, create layout, begin")
+
+        layout = QGridLayout(self)
+        layout.setSpacing(10)
+
+        central_widget = QWidget(self)
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+        layout.addWidget(self._dialogs_table, 0, 0)
+        layout.addWidget(self._fetch_button, 1, 0)
+
+        _LOGGER.debug("MainWindow, create layout, end")
 
     @Slot()
     def _settings_action_triggered(self) -> None:
@@ -108,8 +147,15 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, ensure action trigger, end")
 
     @asyncSlot()
-    async def _connect_clicked(self):
-        """Async slot which handles the connect button click signal."""
-        _LOGGER.debug("MainWindow, connect button click, begin")
-        await get_me()
-        _LOGGER.debug("MainWindow, connect button click, end")
+    async def _fetch_button_clicked(self):
+        """Async slot which handles the fetch all the dialogs button click signal."""
+        _LOGGER.debug("MainWindow, fetch button click, begin")
+
+        self._dialogs_table.clearContents()
+        dialogs = await fetch_all_dialogs()
+
+        self._dialogs_table.setRowCount(len(dialogs))
+        for index, dialog in enumerate(dialogs):
+            self._dialogs_table.setItem(index, 0, QTableWidgetItem(dialog.name))
+
+        _LOGGER.debug("MainWindow, fetch button click, end")

@@ -19,10 +19,11 @@
 """Telegram API and related routines."""
 
 import logging
-from typing import Final, Optional
+from typing import Final, Optional, List
 
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import SessionPasswordNeededError
+from telethon.tl.custom.dialog import Dialog
 
 from settings import AppSettings
 
@@ -31,12 +32,14 @@ SESSION_NAME: Final = "trollogeddon"
 _LOGGER: Final = logging.getLogger(__name__)
 
 
-async def get_me() -> None:
+async def fetch_all_dialogs() -> List[Dialog]:
     client = _create_client()
     await client.connect()
 
-    print(await client.is_user_authorized())
-    print(await client.get_me())
+    dialogs = await client.get_dialogs()
+    await client.disconnect()
+
+    return dialogs
 
 
 async def send_otp_code(phone: str) -> Optional[str]:
@@ -46,10 +49,13 @@ async def send_otp_code(phone: str) -> Optional[str]:
     await client.connect()
 
     if await client.is_user_authorized():
+        await client.disconnect()
         _LOGGER.debug("Send OTP code, already authorized, end")
         return None
 
     result = await client.send_code_request(phone=phone, force_sms=True)
+    await client.disconnect()
+
     _LOGGER.debug("Send OTP code, code requested, end")
     return result.phone_code_hash
 
@@ -61,6 +67,7 @@ async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: 
     await client.connect()
 
     if await client.is_user_authorized():
+        await client.disconnect()
         _LOGGER.debug("Verify OTP code, already authorized, end")
         return
 
@@ -72,6 +79,8 @@ async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: 
         _LOGGER.debug("Verify OTP code, caught SessionPasswordNeededError")
         kwargs = kwargs | dict(password=password)
         await client.sign_in(**kwargs)
+    finally:
+        await client.disconnect()
 
     _LOGGER.debug("Verify OTP code, end")
 
