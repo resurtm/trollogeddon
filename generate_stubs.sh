@@ -20,4 +20,4 @@
 
 set -euxo pipefail
 
-pyside6-genpyi all --feature snake_case true_property
+pyside6-genpyi QtCore QtGui --feature snake_case true_property
