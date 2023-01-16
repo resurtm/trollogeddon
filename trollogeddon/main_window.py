@@ -20,13 +20,14 @@
 
 import logging
 from typing import Final
-
+from qasync import asyncSlot
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMainWindow, QApplication, QPushButton, QToolBar
 
 from ensure_dialog import EnsureSessionDialog
 from settings_dialog import SettingsDialog
+from telegram import get_me
 
 _LOGGER: Final = logging.getLogger(__name__)
 
@@ -106,9 +107,9 @@ class MainWindow(QMainWindow):
         EnsureSessionDialog(self).exec()
         _LOGGER.debug("MainWindow, ensure action trigger, end")
 
-    @Slot()
+    @asyncSlot()
     async def _connect_clicked(self):
         """Async slot which handles the connect button click signal."""
         _LOGGER.debug("MainWindow, connect button click, begin")
-        pass
+        await get_me()
         _LOGGER.debug("MainWindow, connect button click, end")

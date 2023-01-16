@@ -19,8 +19,7 @@
 """Telegram API and related routines."""
 
 import logging
-from typing import Final
-from typing import Optional
+from typing import Final, Optional
 
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import SessionPasswordNeededError
@@ -32,30 +31,56 @@ SESSION_NAME: Final = "trollogeddon"
 _LOGGER: Final = logging.getLogger(__name__)
 
 
-async def send_otp_code(phone: str) -> str:
-    _LOGGER.debug("Send OTP code, begin")
+async def get_me() -> None:
     client = _create_client()
     await client.connect()
+
+    print(await client.is_user_authorized())
+    print(await client.get_me())
+
+
+async def send_otp_code(phone: str) -> Optional[str]:
+    _LOGGER.debug("Send OTP code, begin")
+
+    client = _create_client()
+    await client.connect()
+
+    if await client.is_user_authorized():
+        _LOGGER.debug("Send OTP code, already authorized, end")
+        return None
+
     result = await client.send_code_request(phone=phone, force_sms=True)
-    _LOGGER.debug("Send OTP code, end")
+    _LOGGER.debug("Send OTP code, code requested, end")
     return result.phone_code_hash
 
 
 async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: Optional[str] = None) -> None:
     _LOGGER.debug("Verify OTP code, begin")
+
     client = _create_client()
     await client.connect()
+
+    if await client.is_user_authorized():
+        _LOGGER.debug("Verify OTP code, already authorized, end")
+        return
+
+    kwargs = dict(phone=phone, code=otp_code, phone_code_hash=phone_hash)
     try:
-        await client.sign_in(phone=phone, code=otp_code, phone_code_hash=phone_hash)
+        _LOGGER.debug("Verify OTP code, sign in")
+        await client.sign_in(**kwargs)
     except SessionPasswordNeededError:
-        await client.sign_in(phone=phone, code=otp_code, phone_code_hash=phone_hash, password=password)
-    print(await client.get_me())
+        _LOGGER.debug("Verify OTP code, caught SessionPasswordNeededError")
+        kwargs = kwargs | dict(password=password)
+        await client.sign_in(**kwargs)
+
     _LOGGER.debug("Verify OTP code, end")
 
 
 def _create_client() -> TelegramClient:
     _LOGGER.debug("Create client, begin")
+
     settings = AppSettings()
     client = TelegramClient(SESSION_NAME, int(settings.api_id()), settings.api_hash())
+
     _LOGGER.debug("Create client, end")
     return client
