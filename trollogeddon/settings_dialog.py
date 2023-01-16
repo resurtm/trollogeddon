@@ -19,7 +19,13 @@
 """Application UI settings related code."""
 
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton
+from PySide6.QtWidgets import (
+    QDialog,
+    QGridLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+)
 
 from settings import AppSettings
 

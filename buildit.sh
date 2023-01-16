@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env bash
 
 # Copyright 2023 resurtm@gmail.com
 #
@@ -18,37 +18,5 @@
 #
 # https://opensource.org/licenses/MIT
 
-import asyncio
-import functools
-import sys
-
-import qasync
-from PySide6.QtWidgets import QApplication
-
-from main_window import MainWindow
-
-
-async def main():
-    def close_future(future, loop):
-        loop.call_later(10, future.cancel)
-        future.cancel()
-
-    loop = asyncio.get_event_loop()
-    future = asyncio.Future()
-
-    app = QApplication.instance()
-    if hasattr(app, "aboutToQuit"):
-        getattr(app, "aboutToQuit").connect(functools.partial(close_future, future, loop))
-
-    main_window = MainWindow()
-    main_window.show()
-
-    await future
-    return True
-
-
-if __name__ == "__main__":
-    try:
-        qasync.run(main())
-    except asyncio.exceptions.CancelledError:
-        sys.exit(0)
+set -euxo pipefail
+echo "buildit"
