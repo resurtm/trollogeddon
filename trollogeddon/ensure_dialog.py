@@ -40,8 +40,8 @@ class EnsureSessionDialog(QDialog):
     _password_input: QLineEdit
     _password_label: QLabel
 
-    _send_otp: QPushButton
-    _sign_in: QPushButton
+    _send_otp_button: QPushButton
+    _sign_in_button: QPushButton
 
     _phone_hash: Optional[str]
 
@@ -67,8 +67,8 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create phone controls, begin")
 
         self._phone_input = QLineEdit(self)
-        self._phone_label = QLabel(self.tr("Phone Number:", ""))
-        self._phone_label.set_buddy(self._phone_input)
+        self._phone_label = QLabel("Phone Number:")
+        self._phone_label.setBuddy(self._phone_input)
 
         _LOGGER.debug("EnsureSessionDialog, create phone controls, end")
 
@@ -77,8 +77,8 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create OTP controls, begin")
 
         self._otp_input = QLineEdit(self)
-        self._otp_label = QLabel(self.tr("OTP Code:", ""))
-        self._otp_label.set_buddy(self._otp_input)
+        self._otp_label = QLabel("OTP Code:")
+        self._otp_label.setBuddy(self._otp_input)
 
         _LOGGER.debug("EnsureSessionDialog, create OTP controls, end")
 
@@ -87,8 +87,8 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create password controls, begin")
 
         self._password_input = QLineEdit(self)
-        self._password_label = QLabel(self.tr("Password:", ""))
-        self._password_label.set_buddy(self._password_input)
+        self._password_label = QLabel("Password:")
+        self._password_label.setBuddy(self._password_input)
 
         _LOGGER.debug("EnsureSessionDialog, create password controls, end")
 
@@ -96,10 +96,10 @@ class EnsureSessionDialog(QDialog):
         """Prepare the user session ensure action buttons."""
         _LOGGER.debug("EnsureSessionDialog, create action buttons, begin")
 
-        self._send_otp = QPushButton(self.tr("Send OTP", ""))
-        self._send_otp.clicked.connect(self._send_otp_clicked)  # type: ignore
-        self._sign_in = QPushButton(self.tr("Sign In", ""))
-        self._sign_in.clicked.connect(self._sign_in_clicked)  # type: ignore
+        self._send_otp_button = QPushButton("Send OTP")
+        self._send_otp_button.clicked.connect(self._send_otp_clicked)  # type: ignore
+        self._sign_in_button = QPushButton("Sign In")
+        self._sign_in_button.clicked.connect(self._sign_in_clicked)  # type: ignore
 
         _LOGGER.debug("EnsureSessionDialog, create action buttons, end")
 
@@ -108,20 +108,20 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create layout, begin")
 
         layout = QGridLayout(self)
-        layout.spacing = 10
-        self.set_layout(layout)
+        layout.setSpacing(10)
+        self.setLayout(layout)
 
-        layout.add_widget(self._phone_label, 0, 0)
-        layout.add_widget(self._phone_input, 0, 1)
+        layout.addWidget(self._phone_label, 0, 0)
+        layout.addWidget(self._phone_input, 0, 1)
 
-        layout.add_widget(self._otp_label, 1, 0)
-        layout.add_widget(self._otp_input, 1, 1)
+        layout.addWidget(self._otp_label, 1, 0)
+        layout.addWidget(self._otp_input, 1, 1)
 
-        layout.add_widget(self._password_label, 2, 0)
-        layout.add_widget(self._password_input, 2, 1)
+        layout.addWidget(self._password_label, 2, 0)
+        layout.addWidget(self._password_input, 2, 1)
 
-        layout.add_widget(self._send_otp, 3, 0)
-        layout.add_widget(self._sign_in, 3, 1)
+        layout.addWidget(self._send_otp_button, 3, 0)
+        layout.addWidget(self._sign_in_button, 3, 1)
 
         _LOGGER.debug("EnsureSessionDialog, create layout, end")
 
@@ -129,7 +129,7 @@ class EnsureSessionDialog(QDialog):
     async def _send_otp_clicked(self) -> None:
         """Qt slot handles the OTP code send button click signal."""
         _LOGGER.debug("EnsureSessionDialog, send OTP button click, begin")
-        self._phone_hash = await send_otp_code(phone=self._phone_input.text)
+        self._phone_hash = await send_otp_code(phone=self._phone_input.text())
         _LOGGER.debug("EnsureSessionDialog, send OTP button click, end")
 
     @asyncSlot()
@@ -141,10 +141,10 @@ class EnsureSessionDialog(QDialog):
             _LOGGER.debug("EnsureSessionDialog, phone hash is empty, do nothing")
         else:
             await verify_otp_code(
-                phone=self._phone_input.text,
-                otp_code=self._otp_input.text,
+                phone=self._phone_input.text(),
+                otp_code=self._otp_input.text(),
                 phone_hash=self._phone_hash,
-                password=self._password_input.text,
+                password=self._password_input.text(),
             )
 
         _LOGGER.debug("EnsureSessionDialog, sign in button click, end")

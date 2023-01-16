@@ -25,11 +25,18 @@ import logging
 import sys
 
 import qasync  # type: ignore
-from main import main
+from main_window import MainWindow
+from PySide6.QtWidgets import QApplication
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    try:
-        qasync.run(main())
-    except asyncio.exceptions.CancelledError as e:
-        sys.exit(0)
+
+    app = QApplication(sys.argv)
+    loop = qasync.QEventLoop(app)
+    asyncio.set_event_loop(loop)
+
+    window = MainWindow()
+    window.show()
+
+    with loop:
+        loop.run_forever()

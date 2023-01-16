@@ -57,7 +57,7 @@ class AppSettings:
             api_id: the new value to be used.
         """
         _LOGGER.debug("AppSettings, set api ID")
-        self._settings.set_value(_SETTINGS_TG_API_ID_KEY, api_id)
+        self._settings.setValue(_SETTINGS_TG_API_ID_KEY, api_id)
 
     def api_hash(self) -> str:
         """Get the existing current Telegram App API_HASH value.
@@ -75,4 +75,4 @@ class AppSettings:
             api_hash: the new value to be used.
         """
         _LOGGER.debug("AppSettings, set api hash")
-        self._settings.set_value(_SETTINGS_TG_API_HASH_KEY, api_hash)
+        self._settings.setValue(_SETTINGS_TG_API_HASH_KEY, api_hash)
