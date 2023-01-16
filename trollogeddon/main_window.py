@@ -16,37 +16,78 @@
 #
 # https://opensource.org/licenses/MIT
 
+"""Contains main window class of the application."""
 
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QMainWindow, QApplication, QPushButton
-from qasync import asyncSlot, QApplication
+from PySide6.QtWidgets import QMainWindow, QApplication, QPushButton, QToolBar
+from qasync import asyncSlot
 
 from settings_dialog import SettingsDialog
 from telegram import create_client
 
 
 class MainWindow(QMainWindow):
+    """Main window class of the application."""
+
     def __init__(self, parent=None) -> None:
+        """Default constructor of the main window class of the application.
+
+        Args:
+            parent: Parent object instance.
+        """
         super().__init__(parent)
 
+        self._main_setup()
+        self._create_actions()
+        self._create_start_menu()
+        self._create_toolbar()
+        self._create_connect_button()
+
+    def _main_setup(self) -> None:
+        """Performs the main setup of the application main window."""
         self.setWindowTitle("Trollogeddon")
         self.setFixedSize(QSize(640, 480))
 
-        connect_button = QPushButton("Connect Now", clicked=self._connect_clicked)
-        self.setCentralWidget(connect_button)
+    def _create_actions(self) -> None:
+        """Create menu actions of the application main window."""
+        self._settings_action = QAction("&Settings", self, triggered=self._settings_action_triggered)
+        self._ensure_action = QAction("&Ensure Session", self, triggered=self._ensure_action_triggered)
+        self._exit_action = QAction("E&xit", self, triggered=QApplication.instance().quit)
 
-        settings_action = QAction("&Settings", self, triggered=self._settings_action_triggered)
-        exit_action = QAction("E&xit", self, triggered=QApplication.instance().quit)
-
+    def _create_start_menu(self) -> None:
+        """Create start menu item of the menu bar."""
         start_menu = self.menuBar().addMenu("&Start")
-        start_menu.addAction(settings_action)
-        start_menu.addAction(exit_action)
+        start_menu.addAction(self._settings_action)
+        start_menu.addAction(self._ensure_action)
+        start_menu.addSeparator()
+        start_menu.addAction(self._exit_action)
+
+    def _create_toolbar(self) -> None:
+        """Create main toolbar of the main window."""
+        toolbar = QToolBar("Main Toolbar")
+        toolbar.addAction(self._settings_action)
+        toolbar.addAction(self._ensure_action)
+        toolbar.addSeparator()
+        toolbar.addAction(self._exit_action)
+        self.addToolBar(toolbar)
+
+    def _create_connect_button(self) -> None:
+        """Creates the central connect button element."""
+        connect_button = QPushButton(self.tr("Connect Now"), clicked=self._connect_clicked)
+        self.setCentralWidget(connect_button)
 
     @Slot()
     def _settings_action_triggered(self) -> None:
+        """Slot which handles the open settings action trigger signal."""
         SettingsDialog().exec()
+
+    @Slot()
+    def _ensure_action_triggered(self) -> None:
+        """Slot which handles the ensure session action trigger signal."""
+        pass
 
     @asyncSlot()
     async def _connect_clicked(self):
+        """Async slot which handles the connect button click signal."""
         await create_client()
