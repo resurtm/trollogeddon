@@ -31,6 +31,16 @@ _LOGGER: Final = logging.getLogger(__name__)
 class SettingsDialog(QDialog):
     """Application UI settings dialog class."""
 
+    _api_id_input: QLineEdit
+    _api_id_label: QLabel
+
+    _api_hash_input: QLineEdit
+    _api_hash_label: QLabel
+
+    _save_button: QPushButton
+
+    _settings: AppSettings
+
     def __init__(self, parent=None) -> None:
         """Default constructor of the settings dialog class.
 
@@ -38,52 +48,65 @@ class SettingsDialog(QDialog):
             parent: parent object.
         """
         _LOGGER.debug("SettingsDialog, constructor, begin")
+
         super().__init__(parent)
         self._prepare_settings()
         self._create_api_id_controls()
         self._create_api_hash_controls()
         self._create_save_button()
         self._create_layout()
+
         _LOGGER.debug("SettingsDialog, constructor, end")
 
     def _prepare_settings(self) -> None:
         """Prepare application settings."""
         _LOGGER.debug("SettingsDialog, prepare settings, begin")
-        self.setWindowTitle("Application Settings")
+
+        self.window_title = self.tr("Application Settings", "")
         self._settings = AppSettings()
+
         _LOGGER.debug("SettingsDialog, prepare settings, end")
 
     def _create_api_id_controls(self) -> None:
         """Create input & label PySide controls to be used with the Telegram App API_ID value."""
         _LOGGER.debug("SettingsDialog, create API ID controls, begin")
+
         self._api_id_input = QLineEdit()
-        self._api_id_input.setText(self._settings.api_id())
-        self._api_id_label = QLabel("App api_id:")
-        self._api_id_label.setBuddy(self._api_id_input)
+        self._api_id_input.text = self._settings.api_id()
+        self._api_id_label = QLabel(self.tr("App api_id:", ""))
+        self._api_id_label.set_buddy(self._api_id_input)
+
         _LOGGER.debug("SettingsDialog, create API ID controls, end")
 
     def _create_api_hash_controls(self) -> None:
         """Create input & label PySide controls to be used with the Telegram App APP_HASH value."""
         _LOGGER.debug("SettingsDialog, create API hash controls, begin")
+
         self._api_hash_input = QLineEdit()
-        self._api_hash_input.setText(self._settings.api_hash())
-        self._api_hash_label = QLabel("App api_hash:")
-        self._api_hash_label.setBuddy(self._api_hash_input)
+        self._api_hash_input.text = self._settings.api_hash()
+        self._api_hash_label = QLabel(self.tr("App api_hash:", ""))
+        self._api_hash_label.set_buddy(self._api_hash_input)
+
         _LOGGER.debug("SettingsDialog, create API hash controls, end")
 
     def _create_save_button(self) -> None:
         """Prepare application settings save button."""
         _LOGGER.debug("SettingsDialog, create save button, begin")
-        self._save_button = QPushButton("Save", clicked=self._save_button_clicked)
+
+        self._save_button = QPushButton("Save")
+        self._save_button.clicked.connect(self._save_button_clicked)  # type: ignore
+
         _LOGGER.debug("SettingsDialog, create save button, end")
 
     @Slot()
     def _save_button_clicked(self) -> None:
         """Slot method which handles the application settings save button signal."""
         _LOGGER.debug("SettingsDialog, save button click, begin")
-        self._settings.set_api_id(self._api_id_input.text())
-        self._settings.set_api_hash(self._api_hash_input.text())
+
+        self._settings.set_api_id(self._api_id_input.text)
+        self._settings.set_api_hash(self._api_hash_input.text)
         self.close()
+
         _LOGGER.debug("SettingsDialog, save button click, end")
 
     def _create_layout(self) -> None:
@@ -92,12 +115,12 @@ class SettingsDialog(QDialog):
 
         layout = QGridLayout(self)
 
-        layout.addWidget(self._api_id_label, 0, 0)
-        layout.addWidget(self._api_id_input, 0, 1)
+        layout.add_widget(self._api_id_label, 0, 0)
+        layout.add_widget(self._api_id_input, 0, 1)
 
-        layout.addWidget(self._api_hash_label, 1, 0)
-        layout.addWidget(self._api_hash_input, 1, 1)
+        layout.add_widget(self._api_hash_label, 1, 0)
+        layout.add_widget(self._api_hash_input, 1, 1)
 
-        layout.addWidget(self._save_button, 2, 0, 1, 2)
+        layout.add_widget(self._save_button, 2, 0, 1, 2)
 
         _LOGGER.debug("SettingsDialog, create layout, end")
