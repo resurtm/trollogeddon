@@ -34,7 +34,7 @@ from PySide6.QtWidgets import (
     QToolBar,
     QWidget,
 )
-from qasync import asyncSlot
+from qasync import asyncSlot  # type: ignore
 from settings_dialog import SettingsDialog
 from telegram import fetch_all_dialogs
 
@@ -106,13 +106,14 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, create dialogs table, begin")
         self._dialogs_table = QTableWidget(self)
         self._dialogs_table.setColumnCount(2)
-        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem(self.tr("Chat Name")))
+        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem("Chat Name"))
         _LOGGER.debug("MainWindow, create dialogs table, end")
 
     def _create_dialogs_fetch_button(self) -> None:
         """Creates the button which fetches all the dialogs."""
         _LOGGER.debug("MainWindow, create fetch button, begin")
-        self._fetch_button = QPushButton(self.tr("Fetch All Dialogs"), clicked=self._fetch_button_clicked)
+        self._fetch_button = QPushButton("Fetch All Dialogs")
+        self._fetch_button.clicked.connect(self._fetch_button_clicked)
         _LOGGER.debug("MainWindow, create fetch button, end")
 
     def _create_layout(self) -> None:

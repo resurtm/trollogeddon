@@ -24,7 +24,7 @@ import asyncio
 import logging
 import sys
 
-import qasync
+import qasync  # type: ignore
 from main import main
 
 if __name__ == "__main__":

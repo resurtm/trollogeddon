@@ -22,9 +22,9 @@ import logging
 from typing import Final, List, Optional
 
 from settings import AppSettings
-from telethon import TelegramClient
-from telethon.errors.rpcerrorlist import SessionPasswordNeededError
-from telethon.tl.custom.dialog import Dialog
+from telethon import TelegramClient  # type: ignore
+from telethon.errors.rpcerrorlist import SessionPasswordNeededError  # type: ignore
+from telethon.tl.custom.dialog import Dialog  # type: ignore
 
 SESSION_NAME: Final = "trollogeddon"
 
@@ -76,7 +76,7 @@ async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: 
         await client.sign_in(**kwargs)
     except SessionPasswordNeededError:
         _LOGGER.debug("Verify OTP code, caught SessionPasswordNeededError")
-        kwargs = kwargs | dict(password=password)
+        kwargs = kwargs | dict(password="" if password is None else password)
         await client.sign_in(**kwargs)
     finally:
         await client.disconnect()

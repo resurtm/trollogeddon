@@ -49,7 +49,7 @@ class SettingsDialog(QDialog):
     def _prepare_settings(self) -> None:
         """Prepare application settings."""
         _LOGGER.debug("SettingsDialog, prepare settings, begin")
-        self.setWindowTitle(self.tr("Application Settings"))
+        self.setWindowTitle("Application Settings")
         self._settings = AppSettings()
         _LOGGER.debug("SettingsDialog, prepare settings, end")
 
@@ -58,7 +58,7 @@ class SettingsDialog(QDialog):
         _LOGGER.debug("SettingsDialog, create API ID controls, begin")
         self._api_id_input = QLineEdit()
         self._api_id_input.setText(self._settings.api_id())
-        self._api_id_label = QLabel(self.tr("App api_id:"))
+        self._api_id_label = QLabel("App api_id:")
         self._api_id_label.setBuddy(self._api_id_input)
         _LOGGER.debug("SettingsDialog, create API ID controls, end")
 
@@ -67,14 +67,14 @@ class SettingsDialog(QDialog):
         _LOGGER.debug("SettingsDialog, create API hash controls, begin")
         self._api_hash_input = QLineEdit()
         self._api_hash_input.setText(self._settings.api_hash())
-        self._api_hash_label = QLabel(self.tr("App api_hash:"))
+        self._api_hash_label = QLabel("App api_hash:")
         self._api_hash_label.setBuddy(self._api_hash_input)
         _LOGGER.debug("SettingsDialog, create API hash controls, end")
 
     def _create_save_button(self) -> None:
         """Prepare application settings save button."""
         _LOGGER.debug("SettingsDialog, create save button, begin")
-        self._save_button = QPushButton(self.tr("Save"), clicked=self._save_button_clicked)
+        self._save_button = QPushButton("Save", clicked=self._save_button_clicked)
         _LOGGER.debug("SettingsDialog, create save button, end")
 
     @Slot()

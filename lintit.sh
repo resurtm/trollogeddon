@@ -19,4 +19,6 @@
 # https://opensource.org/licenses/MIT
 
 set -euxo pipefail
-echo "lintit"
+
+pip install -r requirements_dev.in
+python -m mypy trollogeddon

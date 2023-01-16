@@ -20,12 +20,6 @@
 
 set -euxo pipefail
 
-function run_format {
-  python -m black trollogeddon
-  python -m isort trollogeddon
-}
-
 pip install -r requirements_dev.in
-
-run_format
-run_format
+python -m black trollogeddon
+python -m isort trollogeddon

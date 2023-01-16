@@ -18,10 +18,10 @@
 
 """Application main function."""
 
-import asyncio
 import functools
 import logging
-from typing import Final
+from asyncio import AbstractEventLoop, Future, get_event_loop
+from typing import Final, Literal
 
 from main_window import MainWindow
 from PySide6.QtWidgets import QApplication
@@ -29,15 +29,15 @@ from PySide6.QtWidgets import QApplication
 _LOGGER: Final = logging.getLogger(__name__)
 
 
-async def main() -> True:
+async def main() -> Literal[True]:
     """Application main function.
 
     Returns:
         True value that the main function executed correctly.
     """
     _LOGGER.debug("Main function, begin")
-    loop = asyncio.get_event_loop()
-    future = asyncio.Future()
+    loop = get_event_loop()
+    future: Future = Future()
 
     app = QApplication.instance()
     if hasattr(app, "aboutToQuit"):
@@ -52,6 +52,6 @@ async def main() -> True:
     return True
 
 
-def _close_future(future: asyncio.Future, loop: asyncio.AbstractEventLoop) -> None:
+def _close_future(future: Future, loop: AbstractEventLoop) -> None:
     loop.call_later(10, future.cancel)
     future.cancel()
