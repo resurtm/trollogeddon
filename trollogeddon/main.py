@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright 2023 resurtm@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -18,19 +16,43 @@
 #
 # https://opensource.org/licenses/MIT
 
-"""Application entry file."""
+"""Application main function."""
 
 import asyncio
+import functools
 import logging
-import sys
+from typing import Final
 
-import qasync
+from PySide6.QtWidgets import QApplication
 
-from main import main
+from main_window import MainWindow
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    try:
-        qasync.run(main())
-    except asyncio.exceptions.CancelledError as e:
-        sys.exit(0)
+_LOGGER: Final = logging.getLogger(__name__)
+
+
+async def main() -> True:
+    """Application main function.
+
+    Returns:
+        True value that the main function executed correctly.
+    """
+    _LOGGER.debug("Main function, begin")
+    loop = asyncio.get_event_loop()
+    future = asyncio.Future()
+
+    app = QApplication.instance()
+    if hasattr(app, "aboutToQuit"):
+        getattr(app, "aboutToQuit").connect(functools.partial(_close_future, future, loop))
+
+    main_window = MainWindow()
+    main_window.show()
+
+    _LOGGER.debug("Main function, await future")
+    await future
+    _LOGGER.debug("Main function, end")
+    return True
+
+
+def _close_future(future: asyncio.Future, loop: asyncio.AbstractEventLoop) -> None:
+    loop.call_later(10, future.cancel)
+    future.cancel()

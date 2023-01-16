@@ -16,6 +16,11 @@
 #
 # https://opensource.org/licenses/MIT
 
+"""File contains class with the user session ensure dialog things."""
+
+import logging
+from typing import Final
+
 from PySide6.QtWidgets import (
     QDialog,
     QGridLayout,
@@ -27,6 +32,8 @@ from qasync import asyncSlot
 
 from telegram import send_otp_code, verify_otp_code
 
+_LOGGER: Final = logging.getLogger(__name__)
+
 
 class EnsureSessionDialog(QDialog):
     """Ensure user session ensure dialog class."""
@@ -37,36 +44,50 @@ class EnsureSessionDialog(QDialog):
         Args:
             parent: parent object.
         """
+        _LOGGER.debug("EnsureSessionDialog, constructor, begin")
         super().__init__(parent)
-
         self._create_phone_controls()
         self._create_otp_controls()
         self._create_password_controls()
         self._create_action_buttons()
         self._create_layout()
+        _LOGGER.debug("EnsureSessionDialog, constructor, end")
 
     def _create_phone_controls(self) -> None:
+        """Create phone number input related controls."""
+        _LOGGER.debug("EnsureSessionDialog, create phone controls, begin")
         self._phone_input = QLineEdit(self)
         self._phone_label = QLabel(self.tr("Phone Number:"))
         self._phone_label.setBuddy(self._phone_input)
+        _LOGGER.debug("EnsureSessionDialog, create phone controls, end")
 
     def _create_otp_controls(self) -> None:
+        """Create OTP code input related controls."""
+        _LOGGER.debug("EnsureSessionDialog, create OTP controls, begin")
         self._otp_input = QLineEdit(self)
         self._otp_label = QLabel(self.tr("OTP Code:"))
         self._otp_label.setBuddy(self._otp_input)
+        _LOGGER.debug("EnsureSessionDialog, create OTP controls, end")
 
     def _create_password_controls(self) -> None:
+        """Create cloud password input related controls."""
+        _LOGGER.debug("EnsureSessionDialog, create password controls, begin")
         self._password_input = QLineEdit(self)
         self._password_label = QLabel(self.tr("Password:"))
         self._password_label.setBuddy(self._password_input)
+        _LOGGER.debug("EnsureSessionDialog, create password controls, end")
 
     def _create_action_buttons(self) -> None:
         """Prepare the user session ensure action buttons."""
+        _LOGGER.debug("EnsureSessionDialog, create action buttons, begin")
         self._send_otp = QPushButton(self.tr("Send OTP"), clicked=self._send_otp_clicked)
         self._sign_in = QPushButton(self.tr("Sign In"), clicked=self._sign_in_clicked)
+        _LOGGER.debug("EnsureSessionDialog, create action buttons, end")
 
     def _create_layout(self) -> None:
         """Creates a layout of the user session ensure dialog."""
+        _LOGGER.debug("EnsureSessionDialog, create layout, begin")
+
         layout = QGridLayout(self)
         layout.setSpacing(10)
         self.setLayout(layout)
@@ -83,15 +104,23 @@ class EnsureSessionDialog(QDialog):
         layout.addWidget(self._send_otp, 3, 0)
         layout.addWidget(self._sign_in, 3, 1)
 
+        _LOGGER.debug("EnsureSessionDialog, create layout, end")
+
     @asyncSlot()
     async def _send_otp_clicked(self) -> None:
+        """Qt slot handles the OTP code send button click signal."""
+        _LOGGER.debug("EnsureSessionDialog, send OTP button click, begin")
         self._phone_hash = await send_otp_code(phone=self._phone_input.text())
+        _LOGGER.debug("EnsureSessionDialog, send OTP button click, end")
 
     @asyncSlot()
     async def _sign_in_clicked(self) -> None:
+        """Qt slot handles the sign-in button click signal."""
+        _LOGGER.debug("EnsureSessionDialog, sign in button click, begin")
         await verify_otp_code(
             phone=self._phone_input.text(),
             otp_code=self._otp_input.text(),
             phone_hash=self._phone_hash,
             password=self._password_input.text(),
         )
+        _LOGGER.debug("EnsureSessionDialog, sign in button click, end")

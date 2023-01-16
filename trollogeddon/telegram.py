@@ -16,7 +16,11 @@
 #
 # https://opensource.org/licenses/MIT
 
-from typing import Final, Optional
+"""Telegram API and related routines."""
+
+import logging
+from typing import Final
+from typing import Optional
 
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import SessionPasswordNeededError
@@ -25,18 +29,20 @@ from settings import AppSettings
 
 SESSION_NAME: Final = "trollogeddon"
 
+_LOGGER: Final = logging.getLogger(__name__)
+
 
 async def send_otp_code(phone: str) -> str:
+    _LOGGER.debug("Send OTP code, begin")
     client = _create_client()
     await client.connect()
-    # await client.sign_in(phone=phone)
-    # print(await client.get_me())
-    # return ""
     result = await client.send_code_request(phone=phone, force_sms=True)
+    _LOGGER.debug("Send OTP code, end")
     return result.phone_code_hash
 
 
 async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: Optional[str] = None) -> None:
+    _LOGGER.debug("Verify OTP code, begin")
     client = _create_client()
     await client.connect()
     try:
@@ -44,8 +50,12 @@ async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: 
     except SessionPasswordNeededError:
         await client.sign_in(phone=phone, code=otp_code, phone_code_hash=phone_hash, password=password)
     print(await client.get_me())
+    _LOGGER.debug("Verify OTP code, end")
 
 
 def _create_client() -> TelegramClient:
+    _LOGGER.debug("Create client, begin")
     settings = AppSettings()
-    return TelegramClient(SESSION_NAME, int(settings.api_id()), settings.api_hash())
+    client = TelegramClient(SESSION_NAME, int(settings.api_id()), settings.api_hash())
+    _LOGGER.debug("Create client, end")
+    return client

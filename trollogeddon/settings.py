@@ -18,6 +18,7 @@
 
 """File contains settings related things and utilities."""
 
+import logging
 from typing import Final
 
 from PySide6.QtCore import QSettings
@@ -28,13 +29,17 @@ SETTINGS_APP_NAME: Final = "trollogeddon"
 SETTINGS_TG_API_ID_KEY: Final = "telegram/api_id"
 SETTINGS_TG_API_HASH_KEY: Final = "telegram/api_hash"
 
+_LOGGER: Final = logging.getLogger(__name__)
+
 
 class AppSettings:
     """Class responsible for application settings routines."""
 
     def __init__(self) -> None:
         """Default application settings class constructor."""
+        _LOGGER.debug("AppSettings, constructor, begin")
         self._settings = QSettings(SETTINGS_ORG_NAME, SETTINGS_APP_NAME)
+        _LOGGER.debug("AppSettings, constructor, end")
 
     def api_id(self) -> str:
         """Returns the existing current Telegram App API_ID value.
@@ -42,6 +47,7 @@ class AppSettings:
         Returns:
             The current Telegram App API_ID value.
         """
+        _LOGGER.debug("AppSettings, get api ID")
         return self._settings.value(SETTINGS_TG_API_ID_KEY)
 
     def set_api_id(self, api_id: str) -> None:
@@ -50,6 +56,7 @@ class AppSettings:
         Args:
             api_id: the new value to be used.
         """
+        _LOGGER.debug("AppSettings, set api ID")
         self._settings.setValue(SETTINGS_TG_API_ID_KEY, api_id)
 
     def api_hash(self) -> str:
@@ -58,6 +65,7 @@ class AppSettings:
         Returns:
             The current Telegram App API_HASH value.
         """
+        _LOGGER.debug("AppSettings, get api hash")
         return self._settings.value(SETTINGS_TG_API_HASH_KEY)
 
     def set_api_hash(self, api_hash: str) -> None:
@@ -66,4 +74,5 @@ class AppSettings:
         Args:
             api_hash: the new value to be used.
         """
+        _LOGGER.debug("AppSettings, set api hash")
         self._settings.setValue(SETTINGS_TG_API_HASH_KEY, api_hash)
