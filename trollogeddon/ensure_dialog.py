@@ -16,7 +16,6 @@
 #
 # https://opensource.org/licenses/MIT
 
-from PySide6.QtCore import Slot
 from PySide6.QtWidgets import (
     QDialog,
     QGridLayout,
@@ -25,8 +24,8 @@ from PySide6.QtWidgets import (
     QPushButton,
 )
 from qasync import asyncSlot
-from telegram import send_otp_code
-from settings import AppSettings
+
+from telegram import send_otp_code, verify_otp_code
 
 
 class EnsureSessionDialog(QDialog):
@@ -42,6 +41,7 @@ class EnsureSessionDialog(QDialog):
 
         self._create_phone_controls()
         self._create_otp_controls()
+        self._create_password_controls()
         self._create_action_buttons()
         self._create_layout()
 
@@ -55,6 +55,11 @@ class EnsureSessionDialog(QDialog):
         self._otp_label = QLabel(self.tr("OTP Code:"))
         self._otp_label.setBuddy(self._otp_input)
 
+    def _create_password_controls(self) -> None:
+        self._password_input = QLineEdit(self)
+        self._password_label = QLabel(self.tr("Password:"))
+        self._password_label.setBuddy(self._password_input)
+
     def _create_action_buttons(self) -> None:
         """Prepare the user session ensure action buttons."""
         self._send_otp = QPushButton(self.tr("Send OTP"), clicked=self._send_otp_clicked)
@@ -64,6 +69,7 @@ class EnsureSessionDialog(QDialog):
         """Creates a layout of the user session ensure dialog."""
         layout = QGridLayout(self)
         layout.setSpacing(10)
+        self.setLayout(layout)
 
         layout.addWidget(self._phone_label, 0, 0)
         layout.addWidget(self._phone_input, 0, 1)
@@ -71,13 +77,21 @@ class EnsureSessionDialog(QDialog):
         layout.addWidget(self._otp_label, 1, 0)
         layout.addWidget(self._otp_input, 1, 1)
 
-        layout.addWidget(self._send_otp, 2, 0)
-        layout.addWidget(self._sign_in, 2, 1)
+        layout.addWidget(self._password_label, 2, 0)
+        layout.addWidget(self._password_input, 2, 1)
+
+        layout.addWidget(self._send_otp, 3, 0)
+        layout.addWidget(self._sign_in, 3, 1)
 
     @asyncSlot()
     async def _send_otp_clicked(self) -> None:
-        await send_otp_code(self._phone_input.text())
+        self._phone_hash = await send_otp_code(phone=self._phone_input.text())
 
-    @Slot()
-    def _sign_in_clicked(self) -> None:
-        pass
+    @asyncSlot()
+    async def _sign_in_clicked(self) -> None:
+        await verify_otp_code(
+            phone=self._phone_input.text(),
+            otp_code=self._otp_input.text(),
+            phone_hash=self._phone_hash,
+            password=self._password_input.text(),
+        )
