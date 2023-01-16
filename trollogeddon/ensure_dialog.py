@@ -51,7 +51,7 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create phone controls, begin")
         self._phone_input = QLineEdit(self)
         self._phone_label = QLabel(self.tr("Phone Number:"))
-        self._phone_label.setBuddy(self._phone_input)
+        self._phone_label.set_buddy(self._phone_input)
         _LOGGER.debug("EnsureSessionDialog, create phone controls, end")
 
     def _create_otp_controls(self) -> None:
@@ -59,7 +59,7 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create OTP controls, begin")
         self._otp_input = QLineEdit(self)
         self._otp_label = QLabel(self.tr("OTP Code:"))
-        self._otp_label.setBuddy(self._otp_input)
+        self._otp_label.set_buddy(self._otp_input)
         _LOGGER.debug("EnsureSessionDialog, create OTP controls, end")
 
     def _create_password_controls(self) -> None:
@@ -67,7 +67,7 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create password controls, begin")
         self._password_input = QLineEdit(self)
         self._password_label = QLabel(self.tr("Password:"))
-        self._password_label.setBuddy(self._password_input)
+        self._password_label.set_buddy(self._password_input)
         _LOGGER.debug("EnsureSessionDialog, create password controls, end")
 
     def _create_action_buttons(self) -> None:
@@ -82,20 +82,20 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create layout, begin")
 
         layout = QGridLayout(self)
-        layout.setSpacing(10)
-        self.setLayout(layout)
+        layout.set_spacing(10)
+        self.set_layout(layout)
 
-        layout.addWidget(self._phone_label, 0, 0)
-        layout.addWidget(self._phone_input, 0, 1)
+        layout.add_widget(self._phone_label, 0, 0)
+        layout.add_widget(self._phone_input, 0, 1)
 
-        layout.addWidget(self._otp_label, 1, 0)
-        layout.addWidget(self._otp_input, 1, 1)
+        layout.add_widget(self._otp_label, 1, 0)
+        layout.add_widget(self._otp_input, 1, 1)
 
-        layout.addWidget(self._password_label, 2, 0)
-        layout.addWidget(self._password_input, 2, 1)
+        layout.add_widget(self._password_label, 2, 0)
+        layout.add_widget(self._password_input, 2, 1)
 
-        layout.addWidget(self._send_otp, 3, 0)
-        layout.addWidget(self._sign_in, 3, 1)
+        layout.add_widget(self._send_otp, 3, 0)
+        layout.add_widget(self._sign_in, 3, 1)
 
         _LOGGER.debug("EnsureSessionDialog, create layout, end")
 

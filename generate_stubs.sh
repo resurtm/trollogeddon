@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright 2023 resurtm@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -16,28 +18,6 @@
 #
 # https://opensource.org/licenses/MIT
 
-name: build
-on: [ push ]
+set -euxo pipefail
 
-jobs:
-  build:
-
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.9", "3.10" ]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements_dev.in
-      - name: Lint
-        run: |
-          ./lintit.sh
+pyside6-genpyi all --feature snake_case true_property

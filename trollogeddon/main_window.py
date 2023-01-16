@@ -68,8 +68,8 @@ class MainWindow(QMainWindow):
     def _main_setup(self) -> None:
         """Performs the main setup of the application main window."""
         _LOGGER.debug("MainWindow, main setup, begin")
-        self.setWindowTitle("Trollogeddon")
-        self.setFixedSize(QSize(640, 480))
+        self.window_title = "Trollogeddon"
+        self.set_fixed_size(QSize(640, 480))
         _LOGGER.debug("MainWindow, main setup, end")
 
     def _create_actions(self) -> None:
@@ -83,30 +83,30 @@ class MainWindow(QMainWindow):
     def _create_start_menu(self) -> None:
         """Create start menu item of the menu bar."""
         _LOGGER.debug("MainWindow, create start menu, begin")
-        start_menu = self.menuBar().addMenu("&Start")
-        start_menu.addAction(self._settings_action)
-        start_menu.addAction(self._ensure_action)
-        start_menu.addSeparator()
-        start_menu.addAction(self._exit_action)
+        start_menu = self.menu_bar().addMenu("&Start")
+        start_menu.add_action(self._settings_action)
+        start_menu.add_action(self._ensure_action)
+        start_menu.add_separator()
+        start_menu.add_action(self._exit_action)
         _LOGGER.debug("MainWindow, create start menu, end")
 
     def _create_toolbar(self) -> None:
         """Create main toolbar of the main window."""
         _LOGGER.debug("MainWindow, create toolbar, begin")
         toolbar = QToolBar("Main Toolbar")
-        toolbar.addAction(self._settings_action)
-        toolbar.addAction(self._ensure_action)
-        toolbar.addSeparator()
-        toolbar.addAction(self._exit_action)
-        self.addToolBar(toolbar)
+        toolbar.add_action(self._settings_action)
+        toolbar.add_action(self._ensure_action)
+        toolbar.add_separator()
+        toolbar.add_action(self._exit_action)
+        self.add_tool_bar(toolbar)
         _LOGGER.debug("MainWindow, create toolbar, end")
 
     def _create_dialogs_table(self) -> None:
         """Creates the dialogs table."""
         _LOGGER.debug("MainWindow, create dialogs table, begin")
         self._dialogs_table = QTableWidget(self)
-        self._dialogs_table.setColumnCount(2)
-        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem("Chat Name"))
+        self._dialogs_table.column_count = 2
+        self._dialogs_table.set_horizontal_header_item(0, QTableWidgetItem("Chat Name"))
         _LOGGER.debug("MainWindow, create dialogs table, end")
 
     def _create_dialogs_fetch_button(self) -> None:
@@ -121,14 +121,14 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, create layout, begin")
 
         layout = QGridLayout(self)
-        layout.setSpacing(10)
+        layout.spacing = 10
 
         central_widget = QWidget(self)
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
+        central_widget.set_layout(layout)
+        self.set_central_widget(central_widget)
 
-        layout.addWidget(self._dialogs_table, 0, 0)
-        layout.addWidget(self._fetch_button, 1, 0)
+        layout.add_widget(self._dialogs_table, 0, 0)
+        layout.add_widget(self._fetch_button, 1, 0)
 
         _LOGGER.debug("MainWindow, create layout, end")
 
@@ -154,8 +154,8 @@ class MainWindow(QMainWindow):
         self._dialogs_table.clearContents()
         dialogs = await fetch_all_dialogs()
 
-        self._dialogs_table.setRowCount(len(dialogs))
+        self._dialogs_table.set_row_count(len(dialogs))
         for index, dialog in enumerate(dialogs):
-            self._dialogs_table.setItem(index, 0, QTableWidgetItem(dialog.name))
+            self._dialogs_table.set_item(index, 0, QTableWidgetItem(dialog.name))
 
         _LOGGER.debug("MainWindow, fetch button click, end")
