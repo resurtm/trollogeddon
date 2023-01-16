@@ -32,6 +32,11 @@ _LOGGER: Final = logging.getLogger(__name__)
 
 
 async def fetch_all_dialogs() -> List[Dialog]:
+    """Fetch all the chats and dialogs of the user.
+
+    Returns:
+        List with all the chats and dialogs of the user.
+    """
     client = _create_client()
     await client.connect()
 
@@ -42,6 +47,12 @@ async def fetch_all_dialogs() -> List[Dialog]:
 
 
 async def send_otp_code(phone: str) -> Optional[str]:
+    """Request a one time used OTP code to be sent to the user.
+
+    Returns:
+        The resulting phone code cash which was returned by the Telegram API.
+        None value is returned in case the user was already authorized (i.e. there's no need in OTP code).
+    """
     _LOGGER.debug("Send OTP code, begin")
 
     client = _create_client()
@@ -60,6 +71,14 @@ async def send_otp_code(phone: str) -> Optional[str]:
 
 
 async def verify_otp_code(phone: str, otp_code: str, phone_hash: str, password: Optional[str] = None) -> None:
+    """Verify the OTP code which was received by the user after requesting it.
+
+    Args:
+         phone: phone number (e.g. "+49 175 ...").
+         otp_code: the OTP code to be verified.
+         phone_hash: phone hash which was returned in the Telegram API response.
+         password: user's cloud password. Don't provide it or use the `None` value if it's not used by the user.
+    """
     _LOGGER.debug("Verify OTP code, begin")
 
     client = _create_client()
