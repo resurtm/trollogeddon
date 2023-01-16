@@ -16,17 +16,19 @@
 #
 # https://opensource.org/licenses/MIT
 
+from typing import Final, Awaitable
+
 from telethon import TelegramClient
 
 from settings import AppSettings
 
+SESSION_NAME: Final = "trollogeddon"
 
-async def create_client() -> None:
-    print(0)
+
+async def send_otp_code(phone_number: str) -> str:
     settings = AppSettings()
-    client = TelegramClient("sess_name_123", int(settings.api_id()), settings.api_hash())
-    print(1)
+    client = TelegramClient(SESSION_NAME, int(settings.api_id()), settings.api_hash())
+
     await client.connect()
-    print(2)
-    await client.send_code_request("+49175...")
-    print(3)
+    result = await client.send_code_request(phone_number, force_sms=True)
+    return result.phone_code_hash

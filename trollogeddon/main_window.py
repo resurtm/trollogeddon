@@ -21,10 +21,9 @@
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMainWindow, QApplication, QPushButton, QToolBar
-from qasync import asyncSlot
 
+from ensure_dialog import EnsureSessionDialog
 from settings_dialog import SettingsDialog
-from telegram import create_client
 
 
 class MainWindow(QMainWindow):
@@ -80,14 +79,14 @@ class MainWindow(QMainWindow):
     @Slot()
     def _settings_action_triggered(self) -> None:
         """Slot which handles the open settings action trigger signal."""
-        SettingsDialog().exec()
+        SettingsDialog(self).exec()
 
     @Slot()
     def _ensure_action_triggered(self) -> None:
         """Slot which handles the ensure session action trigger signal."""
-        pass
+        EnsureSessionDialog(self).exec()
 
-    @asyncSlot()
+    @Slot()
     async def _connect_clicked(self):
         """Async slot which handles the connect button click signal."""
-        await create_client()
+        pass
