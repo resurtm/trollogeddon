@@ -42,7 +42,7 @@ class SettingsDialog(QDialog):
     _settings: AppSettings
 
     def __init__(self, parent=None) -> None:
-        """Default constructor of the settings dialog class.
+        """Construct a new instance of the settings dialog class.
 
         Args:
             parent: parent object.
@@ -110,7 +110,7 @@ class SettingsDialog(QDialog):
         _LOGGER.debug("SettingsDialog, save button click, end")
 
     def _create_layout(self) -> None:
-        """Creates a layout of the settings dialog."""
+        """Create a layout of the settings dialog."""
         _LOGGER.debug("SettingsDialog, create layout, begin")
 
         layout = QGridLayout(self)

@@ -46,7 +46,7 @@ class EnsureSessionDialog(QDialog):
     _phone_hash: Optional[str]
 
     def __init__(self, parent=None) -> None:
-        """Default constructor of the user session ensure dialog class.
+        """Construct a new instance of the user session ensure dialog class.
 
         Args:
             parent: parent object.
@@ -104,7 +104,7 @@ class EnsureSessionDialog(QDialog):
         _LOGGER.debug("EnsureSessionDialog, create action buttons, end")
 
     def _create_layout(self) -> None:
-        """Creates a layout of the user session ensure dialog."""
+        """Create a layout of the user session ensure dialog."""
         _LOGGER.debug("EnsureSessionDialog, create layout, begin")
 
         layout = QGridLayout(self)

@@ -36,13 +36,13 @@ class AppSettings:
     """Class responsible for application settings routines."""
 
     def __init__(self) -> None:
-        """Default application settings class constructor."""
+        """Construct a new instance of the application settings class."""
         _LOGGER.debug("AppSettings, constructor, begin")
         self._settings = QSettings(_SETTINGS_ORG_NAME, _SETTINGS_APP_NAME)
         _LOGGER.debug("AppSettings, constructor, end")
 
     def api_id(self) -> str:
-        """Returns the existing current Telegram App API_ID value.
+        """Get the existing current Telegram App API_ID value.
 
         Returns:
             The current Telegram App API_ID value.
@@ -51,7 +51,7 @@ class AppSettings:
         return str(self._settings.value(_SETTINGS_TG_API_ID_KEY))
 
     def set_api_id(self, api_id: str) -> None:
-        """Sets the new value of the Telegram App API_ID.
+        """Set the new value of the Telegram App API_ID.
 
         Args:
             api_id: the new value to be used.
@@ -60,7 +60,7 @@ class AppSettings:
         self._settings.set_value(_SETTINGS_TG_API_ID_KEY, api_id)
 
     def api_hash(self) -> str:
-        """Returns the existing current Telegram App API_HASH value.
+        """Get the existing current Telegram App API_HASH value.
 
         Returns:
             The current Telegram App API_HASH value.
@@ -69,7 +69,7 @@ class AppSettings:
         return str(self._settings.value(_SETTINGS_TG_API_HASH_KEY))
 
     def set_api_hash(self, api_hash: str) -> None:
-        """Sets the new value of the Telegram App API_HASH.
+        """Set the new value of the Telegram App API_HASH.
 
         Args:
             api_hash: the new value to be used.

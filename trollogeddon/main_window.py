@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
     """Main window class of the application."""
 
     def __init__(self, parent=None) -> None:
-        """Default constructor of the main window class of the application.
+        """Construct a new instance of the main window class of the application.
 
         Args:
             parent: Parent object instance.
@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, constructor, end")
 
     def _main_setup(self) -> None:
-        """Performs the main setup of the application main window."""
+        """Perform the main setup of the application main window."""
         _LOGGER.debug("MainWindow, main setup, begin")
         self.window_title = "Trollogeddon"
         self.set_fixed_size(QSize(640, 480))
@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, create toolbar, end")
 
     def _create_dialogs_table(self) -> None:
-        """Creates the dialogs table."""
+        """Create the dialogs table."""
         _LOGGER.debug("MainWindow, create dialogs table, begin")
         self._dialogs_table = QTableWidget(self)
         self._dialogs_table.column_count = 2
@@ -119,7 +119,7 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, create dialogs table, end")
 
     def _create_dialogs_fetch_button(self) -> None:
-        """Creates the button which fetches all the dialogs."""
+        """Create the button which fetches all the dialogs."""
         _LOGGER.debug("MainWindow, create fetch button, begin")
 
         self._fetch_button = QPushButton("Fetch All Dialogs")
