@@ -23,11 +23,11 @@ from typing import Final
 
 from PySide6.QtCore import QSettings
 
-SETTINGS_ORG_NAME: Final = "resurtm"
-SETTINGS_APP_NAME: Final = "trollogeddon"
+_SETTINGS_ORG_NAME: Final = "resurtm"
+_SETTINGS_APP_NAME: Final = "trollogeddon"
 
-SETTINGS_TG_API_ID_KEY: Final = "telegram/api_id"
-SETTINGS_TG_API_HASH_KEY: Final = "telegram/api_hash"
+_SETTINGS_TG_API_ID_KEY: Final = "telegram/api_id"
+_SETTINGS_TG_API_HASH_KEY: Final = "telegram/api_hash"
 
 _LOGGER: Final = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class AppSettings:
     def __init__(self) -> None:
         """Default application settings class constructor."""
         _LOGGER.debug("AppSettings, constructor, begin")
-        self._settings = QSettings(SETTINGS_ORG_NAME, SETTINGS_APP_NAME)
+        self._settings = QSettings(_SETTINGS_ORG_NAME, _SETTINGS_APP_NAME)
         _LOGGER.debug("AppSettings, constructor, end")
 
     def api_id(self) -> str:
@@ -48,7 +48,7 @@ class AppSettings:
             The current Telegram App API_ID value.
         """
         _LOGGER.debug("AppSettings, get api ID")
-        return str(self._settings.value(SETTINGS_TG_API_ID_KEY))
+        return str(self._settings.value(_SETTINGS_TG_API_ID_KEY))
 
     def set_api_id(self, api_id: str) -> None:
         """Sets the new value of the Telegram App API_ID.
@@ -57,7 +57,7 @@ class AppSettings:
             api_id: the new value to be used.
         """
         _LOGGER.debug("AppSettings, set api ID")
-        self._settings.setValue(SETTINGS_TG_API_ID_KEY, api_id)
+        self._settings.set_value(_SETTINGS_TG_API_ID_KEY, api_id)
 
     def api_hash(self) -> str:
         """Returns the existing current Telegram App API_HASH value.
@@ -66,7 +66,7 @@ class AppSettings:
             The current Telegram App API_HASH value.
         """
         _LOGGER.debug("AppSettings, get api hash")
-        return str(self._settings.value(SETTINGS_TG_API_HASH_KEY))
+        return str(self._settings.value(_SETTINGS_TG_API_HASH_KEY))
 
     def set_api_hash(self, api_hash: str) -> None:
         """Sets the new value of the Telegram App API_HASH.
@@ -75,4 +75,4 @@ class AppSettings:
             api_hash: the new value to be used.
         """
         _LOGGER.debug("AppSettings, set api hash")
-        self._settings.setValue(SETTINGS_TG_API_HASH_KEY, api_hash)
+        self._settings.set_value(_SETTINGS_TG_API_HASH_KEY, api_hash)

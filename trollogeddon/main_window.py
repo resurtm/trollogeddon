@@ -75,19 +75,28 @@ class MainWindow(QMainWindow):
     def _create_actions(self) -> None:
         """Create menu actions of the application main window."""
         _LOGGER.debug("MainWindow, create actions, begin")
-        self._settings_action = QAction("&Settings", self, triggered=self._settings_action_triggered)
-        self._ensure_action = QAction("&Ensure Session", self, triggered=self._ensure_action_triggered)
-        self._exit_action = QAction("E&xit", self, triggered=QApplication.instance().quit)
+
+        self._settings_action = QAction("&Settings", self)
+        self._settings_action.changed.connect(self._settings_action_triggered)  # type: ignore
+
+        self._ensure_action = QAction("&Ensure Session", self)
+        self._ensure_action.triggered.connect(self._ensure_action_triggered)  # type: ignore
+
+        self._exit_action = QAction("E&xit", self)
+        self._exit_action.triggered.connect(self._exit_action_triggered)  # type: ignore
+
         _LOGGER.debug("MainWindow, create actions, end")
 
     def _create_start_menu(self) -> None:
         """Create start menu item of the menu bar."""
         _LOGGER.debug("MainWindow, create start menu, begin")
-        start_menu = self.menu_bar().addMenu("&Start")
+
+        start_menu = self.menu_bar().add_menu("&Start")
         start_menu.add_action(self._settings_action)
         start_menu.add_action(self._ensure_action)
         start_menu.add_separator()
         start_menu.add_action(self._exit_action)
+
         _LOGGER.debug("MainWindow, create start menu, end")
 
     def _create_toolbar(self) -> None:
@@ -112,8 +121,10 @@ class MainWindow(QMainWindow):
     def _create_dialogs_fetch_button(self) -> None:
         """Creates the button which fetches all the dialogs."""
         _LOGGER.debug("MainWindow, create fetch button, begin")
+
         self._fetch_button = QPushButton("Fetch All Dialogs")
-        self._fetch_button.clicked.connect(self._fetch_button_clicked)
+        self._fetch_button.clicked.connect(self._fetch_button_clicked)  # type: ignore
+
         _LOGGER.debug("MainWindow, create fetch button, end")
 
     def _create_layout(self) -> None:
@@ -145,6 +156,17 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, ensure action trigger, begin")
         EnsureSessionDialog(self).exec()
         _LOGGER.debug("MainWindow, ensure action trigger, end")
+
+    @Slot()
+    def _exit_action_triggered(self) -> None:
+        """Slot which handles the exit action trigger signal."""
+        _LOGGER.debug("MainWindow, exit action trigger, begin")
+
+        app = QApplication.instance()
+        if app:
+            app.quit()
+
+        _LOGGER.debug("MainWindow, exit action trigger, end")
 
     @asyncSlot()
     async def _fetch_button_clicked(self):
