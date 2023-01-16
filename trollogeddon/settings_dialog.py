@@ -22,14 +22,7 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import (
-    QDialog,
-    QGridLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-)
-
+from PySide6.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton
 from settings import AppSettings
 
 _LOGGER: Final = logging.getLogger(__name__)

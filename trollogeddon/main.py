@@ -23,9 +23,8 @@ import functools
 import logging
 from typing import Final
 
-from PySide6.QtWidgets import QApplication
-
 from main_window import MainWindow
+from PySide6.QtWidgets import QApplication
 
 _LOGGER: Final = logging.getLogger(__name__)
 

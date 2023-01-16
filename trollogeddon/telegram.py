@@ -19,13 +19,12 @@
 """Telegram API and related routines."""
 
 import logging
-from typing import Final, Optional, List
+from typing import Final, List, Optional
 
+from settings import AppSettings
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import SessionPasswordNeededError
 from telethon.tl.custom.dialog import Dialog
-
-from settings import AppSettings
 
 SESSION_NAME: Final = "trollogeddon"
 

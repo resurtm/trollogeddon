@@ -17,3 +17,4 @@
 # https://opensource.org/licenses/MIT
 
 black
+isort

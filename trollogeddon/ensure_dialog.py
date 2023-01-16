@@ -21,15 +21,8 @@
 import logging
 from typing import Final
 
-from PySide6.QtWidgets import (
-    QDialog,
-    QGridLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-)
+from PySide6.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton
 from qasync import asyncSlot
-
 from telegram import send_otp_code, verify_otp_code
 
 _LOGGER: Final = logging.getLogger(__name__)

@@ -21,21 +21,20 @@
 import logging
 from typing import Final
 
+from ensure_dialog import EnsureSessionDialog
 from PySide6.QtCore import QSize, Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QMainWindow,
     QApplication,
-    QPushButton,
-    QToolBar,
-    QTableWidget,
     QGridLayout,
-    QWidget,
+    QMainWindow,
+    QPushButton,
+    QTableWidget,
     QTableWidgetItem,
+    QToolBar,
+    QWidget,
 )
 from qasync import asyncSlot
-
-from ensure_dialog import EnsureSessionDialog
 from settings_dialog import SettingsDialog
 from telegram import fetch_all_dialogs
 
