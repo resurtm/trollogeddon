@@ -19,7 +19,7 @@
 """Contains main window class of the application."""
 
 import logging
-from typing import Final
+from typing import Final, List
 
 from ensure_dialog import EnsureSessionDialog
 from PySide6.QtCore import QSize, Qt, Slot
@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
 
         self._create_dialogs_table()
         self._create_dialogs_fetch_button()
+        self._create_dialogs_delete_button()
         self._create_layout()
 
         _LOGGER.debug("MainWindow, constructor, end")
@@ -114,11 +115,13 @@ class MainWindow(QMainWindow):
         """Create the dialogs table."""
         _LOGGER.debug("MainWindow, create dialogs table, begin")
         self._dialogs_table = QTableWidget(self)
-        self._dialogs_table.setColumnCount(2)
+        self._dialogs_table.setColumnCount(3)
         self._dialogs_table.setColumnWidth(0, 550)
         self._dialogs_table.setColumnWidth(1, 150)
+        self._dialogs_table.setColumnWidth(2, 150)
         self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem("Dialog Title"))
         self._dialogs_table.setHorizontalHeaderItem(1, QTableWidgetItem("Entity Type"))
+        self._dialogs_table.setHorizontalHeaderItem(2, QTableWidgetItem("Entity ID"))
         _LOGGER.debug("MainWindow, create dialogs table, end")
 
     def _create_dialogs_fetch_button(self) -> None:
@@ -130,14 +133,24 @@ class MainWindow(QMainWindow):
 
         _LOGGER.debug("MainWindow, create fetch button, end")
 
+    def _create_dialogs_delete_button(self) -> None:
+        """Create the button which deletes the selected dialogs."""
+        _LOGGER.debug("MainWindow, create delete button, begin")
+
+        self._delete_button = QPushButton("Delete Messages in Selected Dialogs")
+        self._delete_button.clicked.connect(self._delete_button_clicked)  # type: ignore
+
+        _LOGGER.debug("MainWindow, create delete button, end")
+
     def _create_layout(self) -> None:
         """Create layout of the app main window."""
         _LOGGER.debug("MainWindow, create layout, begin")
 
         layout = QGridLayout()
         layout.setSpacing(10)
-        layout.addWidget(self._dialogs_table, 0, 0)
+        layout.addWidget(self._dialogs_table, 0, 0, 1, 2)
         layout.addWidget(self._fetch_button, 1, 0)
+        layout.addWidget(self._delete_button, 1, 1)
 
         central_widget = QWidget(self)
         central_widget.setLayout(layout)
@@ -190,4 +203,22 @@ class MainWindow(QMainWindow):
             entity_type.setText(dialog.entity.__class__.__name__)
             self._dialogs_table.setItem(row_index, 1, entity_type)
 
+            entity_id = QTableWidgetItem()
+            entity_id.setText(str(dialog.entity.id))
+            self._dialogs_table.setItem(row_index, 2, entity_id)
+
         _LOGGER.debug("MainWindow, fetch button click, end")
+
+    @asyncSlot()
+    async def _delete_button_clicked(self) -> None:
+        """Async slot which handles delete selected dialogs button click signal."""
+        _LOGGER.debug("MainWindow, delete button click, begin")
+
+        selected_ids: List[str] = [
+            self._dialogs_table.item(row_index, 2).text()
+            for row_index in range(self._dialogs_table.rowCount())
+            if self._dialogs_table.item(row_index, 0).checkState() == Qt.Checked  # type: ignore
+        ]
+        _LOGGER.debug("MainWindow, delete button click, to be deleted: %s", str(selected_ids))
+
+        _LOGGER.debug("MainWindow, delete button click, end")
