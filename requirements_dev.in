@@ -20,3 +20,6 @@ black
 isort
 mypy
 pydocstyle
+pytest
+pytest-asyncio
+pytest-mock

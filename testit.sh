@@ -19,4 +19,6 @@
 # https://opensource.org/licenses/MIT
 
 set -euxo pipefail
-echo "testit"
+
+pip install -r requirements_dev.in
+python -m pytest -vv -s --log-cli-level=DEBUG ./trollogeddon/*_tests.py

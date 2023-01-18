@@ -16,34 +16,33 @@
 #
 # https://opensource.org/licenses/MIT
 
-name: build
-on: [ push ]
+"""Mocked data for testing and development purposes."""
 
-jobs:
-  build:
+from dataclasses import dataclass
 
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.8", "3.9", "3.10" ]
+from telethon.tl.custom.dialog import Dialog  # type: ignore
 
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libegl-mesa0 libegl1 libegl1-mesa
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements_dev.in
-          # ./generate_stubs.sh
-      - name: Lint
-        run: |
-          ./lintit.sh
-      - name: Test
-        run: |
-          ./testit.sh
+
+@dataclass
+class MockedDialog(Dialog):
+    """Sample mocked dialog instance."""
+
+    name: str
+
+
+def get_mocked_dialog1() -> Dialog:
+    """Create a mocked dialog instance, data variation 1.
+
+    Returns:
+        New mocked dialog instance, data variation 1.
+    """
+    return MockedDialog(name="Chat 111")
+
+
+def get_mocked_dialog2() -> Dialog:
+    """Create a mocked dialog instance, data variation 2.
+
+    Returns:
+        New mocked dialog instance, data variation 2.
+    """
+    return MockedDialog(name="Chat 222")
