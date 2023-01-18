@@ -45,9 +45,13 @@ async def test_fetch_all_dialogs(mocker: MockerFixture) -> None:
     con_mock = mocker.patch("telegram.TelegramClient.connect", side_effect=AsyncMock())
     dial_mock = mocker.patch("telegram.TelegramClient.get_dialogs", side_effect=AsyncMock(return_value=_DIALOGS))
     disc_mock = mocker.patch("telegram.TelegramClient.disconnect", side_effect=AsyncMock())
+    id_mock = mocker.patch("telegram.AppSettings.api_id", return_value="123")
+    hash_mock = mocker.patch("telegram.AppSettings.api_hash", return_value="456")
 
     dialogs = await fetch_all_dialogs()  # actual tested function call
     assert con_mock.call_count == 1
     assert dial_mock.call_count == 1
     assert disc_mock.call_count == 1
+    assert id_mock.call_count == 1
+    assert hash_mock.call_count == 1
     assert dialogs == _DIALOGS
