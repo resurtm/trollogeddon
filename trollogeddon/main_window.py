@@ -22,7 +22,7 @@ import logging
 from typing import Final
 
 from ensure_dialog import EnsureSessionDialog
-from PySide6.QtCore import QSize, Slot
+from PySide6.QtCore import QSize, Qt, Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QApplication,
@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
         """Perform the main setup of the application main window."""
         _LOGGER.debug("MainWindow, main setup, begin")
         self.setWindowTitle("Trollogeddon")
-        self.setFixedSize(QSize(640, 480))
+        self.setFixedSize(QSize(1280, 800))
         _LOGGER.debug("MainWindow, main setup, end")
 
     def _create_actions(self) -> None:
@@ -115,7 +115,10 @@ class MainWindow(QMainWindow):
         _LOGGER.debug("MainWindow, create dialogs table, begin")
         self._dialogs_table = QTableWidget(self)
         self._dialogs_table.setColumnCount(2)
-        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem("Chat Name"))
+        self._dialogs_table.setColumnWidth(0, 550)
+        self._dialogs_table.setColumnWidth(1, 150)
+        self._dialogs_table.setHorizontalHeaderItem(0, QTableWidgetItem("Dialog Title"))
+        self._dialogs_table.setHorizontalHeaderItem(1, QTableWidgetItem("Entity Type"))
         _LOGGER.debug("MainWindow, create dialogs table, end")
 
     def _create_dialogs_fetch_button(self) -> None:
@@ -176,7 +179,15 @@ class MainWindow(QMainWindow):
         dialogs = await fetch_all_dialogs()
 
         self._dialogs_table.setRowCount(len(dialogs))
-        for index, dialog in enumerate(dialogs):
-            self._dialogs_table.setItem(index, 0, QTableWidgetItem(dialog.name))
+        for row_index, dialog in enumerate(dialogs):
+            dialog_title = QTableWidgetItem()
+            dialog_title.setText(dialog.name)
+            dialog_title.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)  # type: ignore
+            dialog_title.setCheckState(Qt.Unchecked)  # type: ignore
+            self._dialogs_table.setItem(row_index, 0, dialog_title)
+
+            entity_type = QTableWidgetItem()
+            entity_type.setText(dialog.entity.__class__.__name__)
+            self._dialogs_table.setItem(row_index, 1, entity_type)
 
         _LOGGER.debug("MainWindow, fetch button click, end")
