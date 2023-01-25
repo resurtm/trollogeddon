@@ -19,30 +19,58 @@
 """Mocked data for testing and development purposes."""
 
 from dataclasses import dataclass
+from unittest.mock import AsyncMock, MagicMock, call
 
 from telethon.tl.custom.dialog import Dialog  # type: ignore
+from telethon.tl.custom.message import Message  # type: ignore
 
 
 @dataclass
 class MockedDialog(Dialog):
-    """Sample mocked dialog instance."""
+    """Mocked Telegram dialog dataclass for testing purposes."""
 
     name: str
 
 
+@dataclass
+class MockedMessage(Message):
+    """Mocked Telegram message dataclass for testing purposes."""
+
+    id: int
+    delete: AsyncMock
+
+
 def get_mocked_dialog1() -> Dialog:
-    """Create a mocked dialog instance, data variation 1.
+    """Create a mocked dialog instance, variation 1.
 
     Returns:
-        New mocked dialog instance, data variation 1.
+        New mocked dialog instance, variation 1.
     """
     return MockedDialog(name="Chat 111")
 
 
 def get_mocked_dialog2() -> Dialog:
-    """Create a mocked dialog instance, data variation 2.
+    """Create a mocked dialog instance, variation 2.
 
     Returns:
-        New mocked dialog instance, data variation 2.
+        New mocked dialog instance, variation 2.
     """
     return MockedDialog(name="Chat 222")
+
+
+def get_mocked_message1() -> MockedMessage:
+    """Create a mocked message instance, variation 1.
+
+    Returns:
+        New mocked message instance, variation 1.
+    """
+    return MockedMessage(id=123123, delete=AsyncMock())
+
+
+def get_mocked_message2() -> MockedMessage:
+    """Create a mocked message instance, variation 2.
+
+    Returns:
+        New mocked message instance, variation 2.
+    """
+    return MockedMessage(id=111999, delete=AsyncMock())
