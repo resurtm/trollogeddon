@@ -57,7 +57,9 @@ async def test_fetch_all_dialogs(mocker: MockerFixture) -> None:
     actual_result = await fetch_all_dialogs()  # actual tested function call
 
     assert con_mock.call_count == 1
+    assert con_mock.call_args_list == [call()]
     assert disc_mock.call_count == 1
+    assert disc_mock.call_args_list == [call()]
     assert dial_mock.call_count == 1
     assert id_mock.call_count == 1
     assert hash_mock.call_count == 1
@@ -93,7 +95,7 @@ async def test_delete_messages(mocker: MockerFixture) -> None:
 
 
 def _prepare_telegram_client(mocker: MockerFixture) -> Tuple[MagicMock, MagicMock]:
-    def ctor(session_name: str, api_id: str, api_hash: str) -> None:
+    def ctor(session_name: str, api_id: int, api_hash: str) -> None:
         pass
 
     mocker.patch("telegram.TelegramClient.__init__", wraps=ctor)
