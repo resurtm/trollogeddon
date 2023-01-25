@@ -19,12 +19,13 @@
 """Telegram API and related routines."""
 
 import logging
-from typing import Final, List, Optional
+from typing import Collection, Final, List, Optional
 
 from settings import AppSettings
 from telethon import TelegramClient  # type: ignore
 from telethon.errors.rpcerrorlist import SessionPasswordNeededError  # type: ignore
 from telethon.tl.custom.dialog import Dialog  # type: ignore
+from telethon.tl.custom.message import Message  # type: ignore
 
 SESSION_NAME: Final = "trollogeddon"
 
@@ -37,13 +38,56 @@ async def fetch_all_dialogs() -> List[Dialog]:
     Returns:
         List with all the chats and dialogs of the user.
     """
+    _LOGGER.debug("Fetch all dialogs, begin")
+
     client = _create_client()
     await client.connect()
 
     dialogs = await client.get_dialogs()
     await client.disconnect()
 
+    _LOGGER.debug("Fetch all dialogs, end")
     return dialogs
+
+
+async def delete_messages(entity_ids: Collection[int]) -> None:
+    """Delete Telegram messages from the provided entity IDs.
+
+    Args:
+        entity_ids: Collection with entity IDs to be used to delete the messages from.
+    """
+    _LOGGER.debug("Delete messages, all, begin")
+
+    client = _create_client()
+    await client.connect()
+
+    try:
+        await _delete_messages_internal(entity_ids=entity_ids, client=client)
+    finally:
+        await client.disconnect()
+
+    _LOGGER.debug("Delete messages, all, end")
+
+
+async def _delete_messages_internal(entity_ids: Collection[int], client: TelegramClient) -> None:
+    """Delete Telegram messages from the provided entity IDs. Internal implementation.
+
+    Args:
+        entity_ids: Collection with entity IDs to be used to delete the messages from.
+        client: Telegram client which is already connected to be used to delete the messages.
+    """
+    _LOGGER.debug("Delete messages, all internal, begin")
+    for entity_id in entity_ids:
+        _LOGGER.debug("Delete messages, %s, begin", entity_id)
+
+        message: Message
+        async for message in client.iter_messages(entity=int(entity_id), from_user="me"):
+            _LOGGER.debug("Delete message, %s, %s, begin", entity_id, message.id)
+            await message.delete()
+            _LOGGER.debug("Delete message, %s, %s, end", entity_id, message.id)
+
+        _LOGGER.debug("Delete messages, %s, end", entity_id)
+    _LOGGER.debug("Delete messages, all internal, end")
 
 
 async def send_otp_code(phone: str) -> Optional[str]:

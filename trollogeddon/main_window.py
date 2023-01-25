@@ -36,7 +36,7 @@ from PySide6.QtWidgets import (
 )
 from qasync import asyncSlot  # type: ignore
 from settings_dialog import SettingsDialog
-from telegram import fetch_all_dialogs
+from telegram import delete_messages, fetch_all_dialogs
 
 _LOGGER: Final = logging.getLogger(__name__)
 
@@ -214,11 +214,12 @@ class MainWindow(QMainWindow):
         """Async slot which handles delete selected dialogs button click signal."""
         _LOGGER.debug("MainWindow, delete button click, begin")
 
-        selected_ids: List[str] = [
-            self._dialogs_table.item(row_index, 2).text()
+        selected_ids: List[int] = [
+            int(self._dialogs_table.item(row_index, 2).text())
             for row_index in range(self._dialogs_table.rowCount())
             if self._dialogs_table.item(row_index, 0).checkState() == Qt.Checked  # type: ignore
         ]
         _LOGGER.debug("MainWindow, delete button click, to be deleted: %s", str(selected_ids))
+        await delete_messages(selected_ids)
 
         _LOGGER.debug("MainWindow, delete button click, end")
