@@ -27,9 +27,11 @@ from telethon.errors.rpcerrorlist import SessionPasswordNeededError  # type: ign
 from telethon.tl.custom.dialog import Dialog  # type: ignore
 from telethon.tl.custom.message import Message  # type: ignore
 
-SESSION_NAME: Final = "trollogeddon"
-
+# Local logger instance for the current file.
 _LOGGER: Final = logging.getLogger(__name__)
+
+_SESSION_NAME: Final = "trollogeddon"
+_FROM_USER: Final = "me"
 
 
 async def fetch_all_dialogs() -> List[Dialog]:
@@ -81,7 +83,7 @@ async def _delete_messages_internal(entity_ids: Collection[int], client: Telegra
         _LOGGER.debug("Delete messages, %d, begin", entity_id)
 
         message: Message
-        async for message in client.iter_messages(entity=entity_id, from_user="me"):
+        async for message in client.iter_messages(entity=entity_id, from_user=_FROM_USER):
             _LOGGER.debug("Delete message, %d, %s, begin", entity_id, message.id)
             await message.delete()
             _LOGGER.debug("Delete message, %d, %s, end", entity_id, message.id)
@@ -149,7 +151,7 @@ def _create_client() -> TelegramClient:
     _LOGGER.debug("Create client, begin")
 
     settings = AppSettings()
-    client = TelegramClient(SESSION_NAME, int(settings.api_id()), settings.api_hash())
+    client = TelegramClient(_SESSION_NAME, int(settings.api_id()), settings.api_hash())
 
     _LOGGER.debug("Create client, end")
     return client
