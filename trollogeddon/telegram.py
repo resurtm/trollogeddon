@@ -78,15 +78,15 @@ async def _delete_messages_internal(entity_ids: Collection[int], client: Telegra
     """
     _LOGGER.debug("Delete messages, all internal, begin")
     for entity_id in entity_ids:
-        _LOGGER.debug("Delete messages, %s, begin", entity_id)
+        _LOGGER.debug("Delete messages, %d, begin", entity_id)
 
         message: Message
-        async for message in client.iter_messages(entity=int(entity_id), from_user="me"):
-            _LOGGER.debug("Delete message, %s, %s, begin", entity_id, message.id)
+        async for message in client.iter_messages(entity=entity_id, from_user="me"):
+            _LOGGER.debug("Delete message, %d, %s, begin", entity_id, message.id)
             await message.delete()
-            _LOGGER.debug("Delete message, %s, %s, end", entity_id, message.id)
+            _LOGGER.debug("Delete message, %d, %s, end", entity_id, message.id)
 
-        _LOGGER.debug("Delete messages, %s, end", entity_id)
+        _LOGGER.debug("Delete messages, %d, end", entity_id)
     _LOGGER.debug("Delete messages, all internal, end")
 
 
